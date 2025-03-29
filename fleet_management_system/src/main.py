@@ -1,8 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog
 from src.gui.fleet_gui import FleetManagementGUI
+from src.utils.logger import setup_logging
 
 def main():
+    # Initialize logging system
+    setup_logging()
+    
     root = tk.Tk()
     root.geometry("1000x800")
     root.title("Fleet Management System")
@@ -17,7 +21,6 @@ def main():
     
     app = FleetManagementGUI(root, nav_graph_file)
     
-    # Clean up animation when window closes
     def on_closing():
         app.stop_animation()
         root.destroy()

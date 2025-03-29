@@ -1,0 +1,11 @@
+2025-03-29 17:00:37,494 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_1.json
+2025-03-29 17:00:41,393 - INFO - Robot 1: Robot spawned. at position (3.5691242, -5.4117103)
+2025-03-29 17:00:41,393 - INFO - System: Robot spawned. ID: 1 at (3.5691242, -5.4117103)
+2025-03-29 17:00:42,852 - INFO - Robot 2: Robot spawned. at position (9.962933, -5.3731146)
+2025-03-29 17:00:42,852 - INFO - System: Robot spawned. ID: 2 at (9.962933, -5.3731146)
+2025-03-29 17:00:44,477 - INFO - System: Robot selected. ID: 1
+2025-03-29 17:00:45,992 - INFO - Robot 1: Destination set. to (9.965073, -9.163389) via path [[3.6105862, -1.9856441], [4.510532, -1.1932992], [6.738686, -1.1838837], [8.978668, -1.2015088], [9.946822, -2.0208943], [9.962933, -5.3731146], [9.965073, -9.163389]]
+2025-03-29 17:00:48,307 - INFO - Robot 3: Robot spawned. at position (3.609031, -12.119056)
+2025-03-29 17:00:48,307 - INFO - System: Robot spawned. ID: 3 at (3.609031, -12.119056)
+2025-03-29 17:00:50,061 - INFO - Robot 1: Reached waypoint. 0/7
+2025-03-29 17:00:51,492 - INFO - Robot 1: Reached waypoint. 1/7

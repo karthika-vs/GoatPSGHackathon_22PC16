@@ -4,6 +4,7 @@ from typing import Dict, List, Tuple, Any
 from math import sqrt
 from ..models.nav_graph import NavGraph
 from ..models.robot import Robot
+from src.utils.logger import log_robot_action, log_system_event
 
 class FleetManagementGUI:
     def __init__(self, root: tk.Tk, nav_graph_file: str):
@@ -59,6 +60,7 @@ class FleetManagementGUI:
         
         # Start animation loop
         self.start_animation()
+        log_system_event("System initialized", f"Loading graph from {nav_graph_file}")
     
     def setup_controls(self):
         """Set up the control panel"""
@@ -183,12 +185,12 @@ class FleetManagementGUI:
         self.draw_legend()
     
     def draw_robot(self, robot: Robot):
-        """Draw a robot on the canvas"""
+        """Draw a robot on the canvas with status indication"""
         x, y = robot.position[0], -robot.position[1]
         cx = x * self.scale + self.center_x
         cy = y * self.scale + self.center_y
         
-        # Draw robot as a colored circle with ID
+        # Base robot appearance
         radius = 12
         self.canvas.create_oval(
             cx-radius, cy-radius, cx+radius, cy+radius,
@@ -196,7 +198,7 @@ class FleetManagementGUI:
             tags=f"robot_{robot.id}"
         )
         
-        # Draw robot ID
+        # Robot ID
         self.canvas.create_text(
             cx, cy,
             text=str(robot.id),
@@ -205,59 +207,79 @@ class FleetManagementGUI:
             tags=f"robot_label_{robot.id}"
         )
         
-        # Highlight selected robot
+        # Status indicator
+        status_radius = 4
+        status_color = {
+            "idle": "gray",
+            "moving": "green",
+            "waiting": "yellow",
+            "charging": "blue"
+        }.get(robot.status, "red")
+        
+        self.canvas.create_oval(
+            cx+radius-6, cy+radius-6,
+            cx+radius-6+status_radius*2, cy+radius-6+status_radius*2,
+            fill=status_color, outline="black", width=1,
+            tags=f"robot_status_{robot.id}"
+        )
+        
+        # Selection highlight
         if robot.id == self.selected_robot:
             self.canvas.create_oval(
-                cx-radius-3, cy-radius-3, cx+radius+3, cy+radius+3,
+                cx-radius-3, cy-radius-3,
+                cx+radius+3, cy+radius+3,
                 outline="yellow", width=3,
                 tags=f"robot_highlight_{robot.id}"
             )
-    
     def draw_legend(self):
         """Draw the legend on the canvas"""
         legend_x = 20
         legend_y = 20
         
-        self.canvas.create_rectangle(legend_x-10, legend_y-10, legend_x+180, legend_y+110, fill="white", outline="black")
+        self.canvas.create_rectangle(legend_x-10, legend_y-10, legend_x+180, legend_y+90, fill="white", outline="black")
         self.canvas.create_text(legend_x+85, legend_y, text="Legend", font=("Arial", 10, "bold"))
         
         # Legend items
         items = [
-            ("green", 10, "Charging Station"),
-            ("blue", 8, "Named Location"), 
-            ("red", 6, "Unnamed Location"),
-            ("blue", 4, "Lane Direction"),
-            ("*", 12, "Robot (colored)")
+            ("green", "Charging Station"),
+            ("blue", "Regular Vertex"),
+            ("gray", "Lane Direction"),
+            ("*", "Robot"),
+            ("green", "Moving"),
+            ("yellow", "Waiting"),
+            ("blue", "Charging"),
+            ("gray", "Idle")
         ]
         
-        for i, (color, radius, text) in enumerate(items):
+        for i, (color, text) in enumerate(items):
             y_offset = 20 + i*20
-            if color == "blue" and radius == 4:  # Lane direction indicator
+            if color == "*":  # Robot example
                 self.canvas.create_oval(
-                    legend_x, legend_y+y_offset-2,
-                    legend_x+4, legend_y+y_offset+2,
-                    fill=color
-                )
-            elif color == "*":  # Robot example
-                self.canvas.create_oval(
-                    legend_x, legend_y+y_offset-radius,
-                    legend_x+radius*2, legend_y+y_offset+radius,
+                    legend_x, legend_y+y_offset-12,
+                    legend_x+24, legend_y+y_offset+12,
                     fill="red", outline="black"
                 )
                 self.canvas.create_text(
-                    legend_x+radius, legend_y+y_offset,
+                    legend_x+12, legend_y+y_offset,
                     text="1", fill="white", font=("Arial", 8, "bold")
                 )
-            else:  # Vertex examples
+                # Add status indicator example
+                self.canvas.create_oval(
+                    legend_x+18, legend_y+y_offset+6,
+                    legend_x+22, legend_y+y_offset+10,
+                    fill="green", outline="black"
+                )
+            else:  # Other items
+                radius = 8 if color in ["green", "blue"] else 4
                 self.canvas.create_oval(
                     legend_x, legend_y+y_offset-radius,
                     legend_x+radius*2, legend_y+y_offset+radius,
                     fill=color, outline="black"
                 )
-            self.canvas.create_text(legend_x+60, legend_y+y_offset, text=text, anchor=tk.W)
+            self.canvas.create_text(legend_x+40, legend_y+y_offset, text=text, anchor=tk.W)
     
     def on_canvas_click(self, event):
-        """Handle canvas click events for robot spawning and selection"""
+        """Handle canvas click events according to problem statement"""
         # Check if we clicked on a vertex
         clicked_vertex = None
         for x, y, idx in self.vertex_positions:
@@ -265,17 +287,6 @@ class FleetManagementGUI:
             if distance <= 10:  # Clicked near a vertex
                 clicked_vertex = idx
                 break
-        
-        if clicked_vertex is not None:
-            vertex = self.nav_graph.get_vertex_by_index(self.current_level, clicked_vertex)
-            position = (vertex[0], vertex[1])
-            
-            if self.selected_robot is None:
-                # Spawn a new robot at this vertex
-                self.spawn_robot(position)
-            else:
-                # Assign this vertex as destination for selected robot
-                self.assign_destination(self.selected_robot, position)
         
         # Check if we clicked on a robot
         clicked_robot = None
@@ -288,7 +299,25 @@ class FleetManagementGUI:
                 clicked_robot = robot_id
                 break
         
-        if clicked_robot is not None:
+        # Behavior according to problem statement
+        if clicked_vertex is not None:
+            vertex = self.nav_graph.get_vertex_by_index(self.current_level, clicked_vertex)
+            position = (vertex[0], vertex[1])
+            
+            if clicked_robot is None:  # Clicked on vertex, not robot
+                if self.selected_robot is None:
+                    # First click - spawn new robot
+                    self.spawn_robot(position)
+                else:
+                    # Second click - set destination for selected robot
+                    self.assign_destination(self.selected_robot, position)
+                    self.selected_robot = None  # Deselect after assignment
+            else:
+                # Clicked on both vertex and robot (edge case) - treat as robot selection
+                self.select_robot(clicked_robot)
+        
+        elif clicked_robot is not None:
+            # Clicked only on robot - select it
             self.select_robot(clicked_robot)
     
     def on_canvas_release(self, event):
@@ -297,22 +326,17 @@ class FleetManagementGUI:
         self.pan_start_y = None
     
     def spawn_robot(self, position: Tuple[float, float]):
-        """Spawn a new robot at the given position"""
         new_robot = Robot(self.next_robot_id, position)
         self.robots[self.next_robot_id] = new_robot
         self.next_robot_id += 1
-        
-        # Log the spawn event
-        print(f"Spawned robot {new_robot.id} at position {position}")
-        
-        # Redraw to show the new robot
+        log_system_event("Robot spawned", f"ID: {new_robot.id} at {position}")
         self.draw_graph()
     
     def select_robot(self, robot_id: int):
-        """Select a robot"""
         self.selected_robot = robot_id
+        log_system_event("Robot selected", f"ID: {robot_id}")
         self.update_robot_info()
-        self.draw_graph()  # Redraw to show selection highlight
+        self.draw_graph()
     
     def clear_selection(self):
         """Clear the current robot selection"""
@@ -321,18 +345,33 @@ class FleetManagementGUI:
         self.draw_graph()
     
     def assign_destination(self, robot_id: int, destination: Tuple[float, float]):
-        """Assign a destination to a robot"""
-        if robot_id in self.robots:
-            robot = self.robots[robot_id]
-            robot.set_destination(destination)
-            robot.set_status("moving")
+        if robot_id not in self.robots:
+            log_system_event("Warning", f"Invalid robot ID: {robot_id}")
+            return
             
-            # Log the destination assignment
-            print(f"Assigned destination {destination} to robot {robot_id}")
-            
-            self.update_robot_info()
-            self.draw_graph()
+        robot = self.robots[robot_id]
+        start_idx = self.find_closest_vertex(robot.position)
+        end_idx = self.find_closest_vertex(destination)
+        
+        if start_idx == end_idx:
+            log_system_event("Warning", "Robot already at destination")
+            return
+        
+        path = self.nav_graph.find_path(self.current_level, start_idx, end_idx)
+        
+        if not path:
+            log_system_event("Warning", "No valid path found")
+            return
+        
+        robot.set_destination(destination, path)
+        self.update_robot_info()
+        self.draw_graph()
     
+    def change_level(self, level_name: str):
+        log_system_event("Level changed", f"to {level_name}")
+        self.current_level = level_name
+        self.reset_view()
+        
     def update_robot_info(self):
         """Update the robot information display"""
         if self.selected_robot is None:
@@ -347,10 +386,6 @@ class FleetManagementGUI:
             )
             self.robot_info_label.config(text=info)
     
-    def change_level(self, level_name: str):
-        """Change the displayed level"""
-        self.current_level = level_name
-        self.reset_view()
     
     def zoom_in(self):
         """Zoom in on the graph"""
