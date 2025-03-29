@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+from tkinter import ttk, messagebox
 from typing import Dict, List, Tuple, Any
 from math import sqrt
 from ..models.nav_graph import NavGraph
@@ -11,10 +11,17 @@ class FleetManagementGUI:
         self.root = root
         self.root.title("Fleet Management System")
         
+        # Configure window
+        self.root.geometry("1200x800")
+        self.root.minsize(1000, 700)
+        
+        # Custom styling
+        self.setup_styles()
+        
         # Load navigation graph
         self.nav_graph = NavGraph(nav_graph_file)
         
-        # Set current level (initialize this first)
+        # Set current level
         self.current_level = self.nav_graph.get_level_names()[0]
         
         # Robot management
@@ -22,19 +29,22 @@ class FleetManagementGUI:
         self.next_robot_id = 1
         self.selected_robot = None
         
-        # Create main frames
-        self.main_frame = ttk.Frame(root)
-        self.main_frame.pack(fill=tk.BOTH, expand=True)
+        # Create main frames with modern layout
+        self.main_frame = ttk.Frame(root, style='Main.TFrame')
+        self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
-        # Create canvas for visualization
-        self.canvas = tk.Canvas(self.main_frame, bg="white")
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # Create canvas for visualization with shadow effect
+        self.canvas_frame = ttk.Frame(self.main_frame, style='Canvas.TFrame')
+        self.canvas_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         
-        # Create control panel
-        self.control_frame = ttk.Frame(self.main_frame, width=200)
-        self.control_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+        self.canvas = tk.Canvas(self.canvas_frame, bg="#f5f5f5", highlightthickness=0)
+        self.canvas.pack(fill=tk.BOTH, expand=True, padx=(0, 10))
         
-        # Setup controls
+        # Create control panel with modern styling
+        self.control_frame = ttk.Frame(self.main_frame, width=280, style='Control.TFrame')
+        self.control_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 5))
+        
+        # Setup controls with improved layout
         self.setup_controls()
         
         # Initialize view parameters
@@ -51,21 +61,55 @@ class FleetManagementGUI:
         self.canvas.bind("<ButtonPress-1>", self.on_canvas_click)
         self.canvas.bind("<B1-Motion>", self.pan)
         self.canvas.bind("<ButtonRelease-1>", self.on_canvas_release)
+        self.canvas.bind("<MouseWheel>", self.on_mousewheel)  # For zoom with mouse wheel
+        
+        # Animation control
+        self.animation_running = False
+        self.after_id = None
         
         # Draw the initial graph
         self.draw_graph()
-        # Add animation control
-        self.animation_running = False
-        self.after_id = None
         
         # Start animation loop
         self.start_animation()
         log_system_event("System initialized", f"Loading graph from {nav_graph_file}")
     
+    def setup_styles(self):
+        """Configure custom styles for a professional look"""
+        style = ttk.Style()
+        
+        # Configure main styles
+        style.configure('Main.TFrame', background='#e1e5ed')
+        style.configure('Canvas.TFrame', background='#ffffff', relief=tk.RAISED, borderwidth=1)
+        style.configure('Control.TFrame', background='#ffffff', relief=tk.RAISED, borderwidth=1)
+        
+        # Button styles
+        style.configure('TButton', font=('Segoe UI', 9), padding=6)
+        style.map('TButton',
+            foreground=[('pressed', 'white'), ('active', 'white')],
+            background=[('pressed', '#4a6baf'), ('active', '#5c7cbf')]
+        )
+        
+        # Label styles
+        style.configure('Header.TLabel', font=('Segoe UI', 11, 'bold'), background='#ffffff', foreground='#2c3e50')
+        style.configure('Subheader.TLabel', font=('Segoe UI', 10, 'bold'), background='#ffffff', foreground='#34495e')
+        
+        # Option menu style
+        style.configure('TMenubutton', font=('Segoe UI', 9))
+        
+        # Robot info frame
+        style.configure('Info.TLabelframe', font=('Segoe UI', 9, 'bold'), background='#ffffff')
+        style.configure('Info.TLabelframe.Label', font=('Segoe UI', 9, 'bold'), background='#ffffff')
+        style.configure('Info.TLabel', font=('Segoe UI', 9), background='#ffffff', padding=(5, 2))
+    
     def setup_controls(self):
-        """Set up the control panel"""
+        """Set up the control panel with improved layout"""
+        # Header
+        header = ttk.Label(self.control_frame, text="FLEET CONTROLS", style='Header.TLabel')
+        header.pack(pady=(15, 10), padx=10, anchor=tk.NW)
+        
         # Level selection
-        ttk.Label(self.control_frame, text="Level:").pack(pady=(10, 0))
+        ttk.Label(self.control_frame, text="Environment Level:", style='Subheader.TLabel').pack(pady=(5, 0), padx=10, anchor=tk.NW)
         self.level_var = tk.StringVar(value=self.current_level)
         level_menu = ttk.OptionMenu(
             self.control_frame,
@@ -74,32 +118,56 @@ class FleetManagementGUI:
             *self.nav_graph.get_level_names(),
             command=self.change_level
         )
-        level_menu.pack(fill=tk.X, padx=5, pady=(0, 10))
+        level_menu.pack(fill=tk.X, padx=10, pady=(0, 15))
         
-        # Zoom controls
-        ttk.Label(self.control_frame, text="View Controls:").pack()
+        # View controls
+        ttk.Label(self.control_frame, text="View Controls:", style='Subheader.TLabel').pack(pady=(5, 0), padx=10, anchor=tk.NW)
         zoom_frame = ttk.Frame(self.control_frame)
-        zoom_frame.pack(fill=tk.X, padx=5, pady=5)
-        ttk.Button(zoom_frame, text="+", command=self.zoom_in, width=3).pack(side=tk.LEFT)
-        ttk.Button(zoom_frame, text="-", command=self.zoom_out, width=3).pack(side=tk.LEFT)
-        ttk.Button(zoom_frame, text="Reset", command=self.reset_view).pack(side=tk.RIGHT)
+        zoom_frame.pack(fill=tk.X, padx=10, pady=5)
+        
+        ttk.Button(zoom_frame, text="Zoom In", command=self.zoom_in, width=8).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(zoom_frame, text="Zoom Out", command=self.zoom_out, width=8).pack(side=tk.LEFT)
+        ttk.Button(zoom_frame, text="Reset View", command=self.reset_view).pack(side=tk.RIGHT)
+        
+        # Separator
+        ttk.Separator(self.control_frame, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=15, padx=10)
         
         # Robot controls
-        ttk.Label(self.control_frame, text="Robot Controls:").pack(pady=(10, 0))
-        ttk.Button(self.control_frame, text="Clear Selection", command=self.clear_selection).pack(fill=tk.X, padx=5, pady=5)
+        ttk.Label(self.control_frame, text="Robot Controls:", style='Subheader.TLabel').pack(pady=(5, 0), padx=10, anchor=tk.NW)
+        ttk.Button(self.control_frame, text="Clear Selection", command=self.clear_selection).pack(fill=tk.X, padx=10, pady=5)
+        
+        # Separator
+        ttk.Separator(self.control_frame, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=15, padx=10)
         
         # Robot info display
-        self.robot_info_frame = ttk.LabelFrame(self.control_frame, text="Robot Info")
-        self.robot_info_frame.pack(fill=tk.X, padx=5, pady=5)
-        self.robot_info_label = ttk.Label(self.robot_info_frame, text="No robot selected")
-        self.robot_info_label.pack(padx=5, pady=5)
-    
-    # [Rest of the methods remain the same as in the previous implementation]
-    # ...
+        self.robot_info_frame = ttk.LabelFrame(self.control_frame, text="Selected Robot", style='Info.TLabelframe')
+        self.robot_info_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
+        
+        self.robot_info_label = ttk.Label(
+            self.robot_info_frame, 
+            text="No robot selected\n\nClick on a vertex to spawn a robot\nor select an existing robot",
+            style='Info.TLabel',
+            justify=tk.LEFT
+        )
+        self.robot_info_label.pack(padx=10, pady=10, fill=tk.X)
+        
+        # System status
+        ttk.Label(self.control_frame, text="System Status:", style='Subheader.TLabel').pack(pady=(5, 0), padx=10, anchor=tk.NW)
+        self.status_label = ttk.Label(
+            self.control_frame, 
+            text="System ready\nRobots: 0",
+            style='Info.TLabel',
+            justify=tk.LEFT
+        )
+        self.status_label.pack(padx=10, pady=(0, 15), fill=tk.X)
     
     def draw_graph(self):
-        """Draw the navigation graph with robots"""
+        """Draw the navigation graph with robots using improved visuals"""
         self.canvas.delete("all")
+        
+        # Draw a subtle grid background
+        self.draw_grid()
+        
         vertices = self.nav_graph.get_vertices(self.current_level)
         lanes = self.nav_graph.get_lanes(self.current_level)
         
@@ -126,7 +194,7 @@ class FleetManagementGUI:
         # Store vertex positions for click detection
         self.vertex_positions = []
         
-        # Draw lanes
+        # Draw lanes with improved styling
         for lane in lanes:
             start_idx, end_idx = lane[0], lane[1]
             start = vertices[start_idx]
@@ -137,13 +205,25 @@ class FleetManagementGUI:
             x2 = end[0] * self.scale + self.center_x
             y2 = -end[1] * self.scale + self.center_y
             
-            self.canvas.create_line(x1, y1, x2, y2, fill="gray", width=2, arrow=tk.LAST)
+            # Draw lane with gradient effect
+            self.canvas.create_line(
+                x1, y1, x2, y2, 
+                fill="#a0a0a0", 
+                width=3, 
+                arrow=tk.LAST, 
+                arrowshape=(8, 10, 5),
+                smooth=True
+            )
             
             # Add direction indicator
             mid_x, mid_y = (x1 + x2)/2, (y1 + y2)/2
-            self.canvas.create_oval(mid_x-2, mid_y-2, mid_x+2, mid_y+2, fill="blue")
+            self.canvas.create_oval(
+                mid_x-3, mid_y-3, mid_x+3, mid_y+3, 
+                fill="#4a6baf", 
+                outline="#2c3e50"
+            )
         
-        # Draw vertices
+        # Draw vertices with improved styling
         for i, vertex in enumerate(vertices):
             x, y = vertex[0], -vertex[1]
             cx = x * self.scale + self.center_x
@@ -157,126 +237,257 @@ class FleetManagementGUI:
             is_charger = vertex_attrs.get("is_charger", False)
             name = vertex_attrs.get("name", "")
             
-            color = "green" if is_charger else "blue" if name else "red"
-            radius = 10 if is_charger else 8 if name else 6
+            # Vertex colors and styles
+            if is_charger:
+                color = "#27ae60"  # Green for chargers
+                radius = 12
+            elif name:
+                color = "#3498db"  # Blue for named vertices
+                radius = 10
+            else:
+                color = "#e74c3c"  # Red for unnamed vertices
+                radius = 8
             
-            # Draw vertex
+            # Draw vertex with shadow effect
+            self.canvas.create_oval(
+                cx-radius+1, cy-radius+1, cx+radius+1, cy+radius+1,
+                fill="#555555", outline="",
+                tags=f"vertex_shadow_{i}"
+            )
+            
             self.canvas.create_oval(
                 cx-radius, cy-radius, cx+radius, cy+radius,
-                fill=color, outline="black", width=2,
+                fill=color, outline="#2c3e50", width=1.5,
                 tags=f"vertex_{i}"
             )
             
             # Add label if available
             if name:
                 self.canvas.create_text(
-                    cx, cy-radius-10,
+                    cx, cy-radius-12,
                     text=name,
-                    fill="black",
-                    font=("Arial", 10, "bold"),
+                    fill="#2c3e50",
+                    font=("Segoe UI", 9, "bold"),
                     tags=f"label_{i}"
                 )
         
-        # Draw robots
+        # Draw robots with improved styling
         for robot_id, robot in self.robots.items():
             self.draw_robot(robot)
         
-        # Draw legend
+        # Draw legend with improved styling
         self.draw_legend()
+        
+        # Update status
+        self.update_status()
+    
+    def draw_grid(self):
+        """Draw a subtle grid in the background"""
+        width = self.canvas.winfo_width()
+        height = self.canvas.winfo_height()
+        
+        # Vertical lines
+        for x in range(0, width, 50):
+            self.canvas.create_line(x, 0, x, height, fill="#e0e0e0", tags="grid")
+        
+        # Horizontal lines
+        for y in range(0, height, 50):
+            self.canvas.create_line(0, y, width, y, fill="#e0e0e0", tags="grid")
     
     def draw_robot(self, robot: Robot):
-        """Draw a robot on the canvas with status indication"""
+        """Draw a robot on the canvas with improved visuals"""
         x, y = robot.position[0], -robot.position[1]
         cx = x * self.scale + self.center_x
         cy = y * self.scale + self.center_y
         
-        # Base robot appearance
-        radius = 12
+        # Robot color based on ID for better distinction
+        colors = ["#e74c3c", "#3498db", "#9b59b6", "#1abc9c", "#f39c12", "#d35400"]
+        robot_color = colors[robot.id % len(colors)]
+        
+        # Base robot appearance with shadow
+        radius = 14
+        self.canvas.create_oval(
+            cx-radius+2, cy-radius+2, cx+radius+2, cy+radius+2,
+            fill="#555555", outline="", tags=f"robot_shadow_{robot.id}"
+        )
+        
         self.canvas.create_oval(
             cx-radius, cy-radius, cx+radius, cy+radius,
-            fill=robot.color, outline="black", width=2,
+            fill=robot_color, outline="#2c3e50", width=1.5,
             tags=f"robot_{robot.id}"
         )
         
-        # Robot ID
+        # Robot ID with improved styling
         self.canvas.create_text(
             cx, cy,
             text=str(robot.id),
             fill="white",
-            font=("Arial", 8, "bold"),
+            font=("Segoe UI", 9, "bold"),
             tags=f"robot_label_{robot.id}"
         )
         
-        # Status indicator
-        status_radius = 4
-        status_color = {
-            "idle": "gray",
-            "moving": "green",
-            "waiting": "yellow",
-            "charging": "blue"
-        }.get(robot.status, "red")
+        # Status indicator with improved styling
+        status_radius = 5
+        status_colors = {
+            "idle": "#95a5a6",
+            "moving": "#2ecc71",
+            "waiting": "#f1c40f",
+            "charging": "#3498db",
+            "error": "#e74c3c"
+        }
+        status_color = status_colors.get(robot.status, "#e74c3c")
         
         self.canvas.create_oval(
-            cx+radius-6, cy+radius-6,
-            cx+radius-6+status_radius*2, cy+radius-6+status_radius*2,
-            fill=status_color, outline="black", width=1,
+            cx+radius-8, cy+radius-8,
+            cx+radius-8+status_radius*2, cy+radius-8+status_radius*2,
+            fill=status_color, outline="#2c3e50", width=1,
             tags=f"robot_status_{robot.id}"
         )
         
-        # Selection highlight
+        # Selection highlight with improved styling
         if robot.id == self.selected_robot:
             self.canvas.create_oval(
-                cx-radius-3, cy-radius-3,
-                cx+radius+3, cy+radius+3,
-                outline="yellow", width=3,
+                cx-radius-4, cy-radius-4,
+                cx+radius+4, cy+radius+4,
+                outline="#f1c40f", width=3,
                 tags=f"robot_highlight_{robot.id}"
             )
+            
+            # Draw path to destination if selected
+            if robot.path:
+                self.draw_robot_path(robot)
+    
+    def draw_robot_path(self, robot: Robot):
+        """Draw the path for a selected robot"""
+        vertices = self.nav_graph.get_vertices(self.current_level)
+        path_points = []
+        
+        for vertex_idx in robot.path:
+            vertex = vertices[vertex_idx]
+            x = vertex[0] * self.scale + self.center_x
+            y = -vertex[1] * self.scale + self.center_y
+            path_points.extend([x, y])
+        
+        if len(path_points) >= 4:
+            # Draw path line
+            self.canvas.create_line(
+                *path_points,
+                fill="#f1c40f",
+                width=2,
+                dash=(5, 3),
+                tags=f"robot_path_{robot.id}"
+            )
+            
+            # Draw path markers
+            for i in range(0, len(path_points), 2):
+                x, y = path_points[i], path_points[i+1]
+                self.canvas.create_oval(
+                    x-3, y-3, x+3, y+3,
+                    fill="#f1c40f", outline="#d35400",
+                    tags=f"path_marker_{robot.id}_{i//2}"
+                )
+    
     def draw_legend(self):
-        """Draw the legend on the canvas"""
+        """Draw a perfectly aligned legend with consistent spacing"""
         legend_x = 20
         legend_y = 20
+        box_width = 200
+        item_height = 24  # Increased for better spacing
+        padding = 12
         
-        self.canvas.create_rectangle(legend_x-10, legend_y-10, legend_x+180, legend_y+90, fill="white", outline="black")
-        self.canvas.create_text(legend_x+85, legend_y, text="Legend", font=("Arial", 10, "bold"))
+        # Draw legend box with subtle shadow and rounded corners
+        self.canvas.create_rectangle(
+            legend_x+2, legend_y+2, legend_x+box_width+2, legend_y+118,
+            fill="#e0e0e0", outline="", tags="legend_shadow"
+        )
+        self.canvas.create_rectangle(
+            legend_x, legend_y, legend_x+box_width, legend_y+116,
+            fill="white", outline="#bdc3c7", width=1,
+            tags="legend_box"
+        )
         
-        # Legend items
+        # Legend header (centered)
+        self.canvas.create_text(
+            legend_x + box_width//2, legend_y + padding,
+            text="LEGEND", 
+            fill="#2c3e50",
+            font=("Segoe UI", 10, "bold"),
+            tags="legend_header"
+        )
+        
+        # Legend items data (color, text, radius, is_robot)
         items = [
-            ("green", "Charging Station"),
-            ("blue", "Regular Vertex"),
-            ("gray", "Lane Direction"),
-            ("*", "Robot"),
-            ("green", "Moving"),
-            ("yellow", "Waiting"),
-            ("blue", "Charging"),
-            ("gray", "Idle")
+            ("#27ae60", "Charging Station", 8, False),
+            ("#3498db", "Named Vertex", 8, False),
+            ("#e74c3c", "Unnamed Vertex", 8, False),
+            ("", "Robot (with status)", 0, True),
+            ("#2ecc71", "Moving", 6, False),
+            ("#f1c40f", "Waiting", 6, False),
+            ("#3498db", "Charging", 6, False),
+            ("#95a5a6", "Idle", 6, False)
         ]
         
-        for i, (color, text) in enumerate(items):
-            y_offset = 20 + i*20
-            if color == "*":  # Robot example
+        for i, (color, text, radius, is_robot) in enumerate(items):
+            y_pos = legend_y + padding + 20 + (i * item_height)
+            
+            if is_robot:
+                # Draw robot example with status indicator
+                robot_x = legend_x + 12
                 self.canvas.create_oval(
-                    legend_x, legend_y+y_offset-12,
-                    legend_x+24, legend_y+y_offset+12,
-                    fill="red", outline="black"
+                    robot_x, y_pos-8,
+                    robot_x+16, y_pos+8,
+                    fill="#e74c3c", outline="#2c3e50", width=1,
+                    tags="legend_robot"
                 )
                 self.canvas.create_text(
-                    legend_x+12, legend_y+y_offset,
-                    text="1", fill="white", font=("Arial", 8, "bold")
+                    robot_x+8, y_pos,
+                    text="1", fill="white", font=("Segoe UI", 8, "bold"),
+                    tags="legend_robot_label"
                 )
-                # Add status indicator example
+                # Status indicator
                 self.canvas.create_oval(
-                    legend_x+18, legend_y+y_offset+6,
-                    legend_x+22, legend_y+y_offset+10,
-                    fill="green", outline="black"
+                    robot_x+12, y_pos+4,
+                    robot_x+16, y_pos+8,
+                    fill="#2ecc71", outline="#27ae60", width=1,
+                    tags="legend_robot_status"
                 )
-            else:  # Other items
-                radius = 8 if color in ["green", "blue"] else 4
+            else:
+                # Draw colored circle
+                circle_x = legend_x + 12
                 self.canvas.create_oval(
-                    legend_x, legend_y+y_offset-radius,
-                    legend_x+radius*2, legend_y+y_offset+radius,
-                    fill=color, outline="black"
+                    circle_x, y_pos-radius,
+                    circle_x+radius*2, y_pos+radius,
+                    fill=color, outline="#2c3e50", width=1,
+                    tags=f"legend_item_{i}"
                 )
-            self.canvas.create_text(legend_x+40, legend_y+y_offset, text=text, anchor=tk.W)
+            
+            # Text label (perfectly aligned to same baseline)
+            text_x = legend_x + 36  # Consistent left alignment
+            self.canvas.create_text(
+                text_x, y_pos,
+                text=text, 
+                anchor=tk.W,  # West anchor for left alignment
+                fill="#2c3e50",
+                font=("Segoe UI", 9),
+                tags=f"legend_text_{i}"
+            )
+
+    def update_status(self):
+        """Update the system status display"""
+        status_text = (
+            f"System: {'Running' if self.animation_running else 'Paused'}\n"
+            f"Robots: {len(self.robots)}\n"
+            f"Level: {self.current_level}\n"
+            f"Zoom: {self.zoom_level:.1f}x"
+        )
+        self.status_label.config(text=status_text)
+    
+    def on_mousewheel(self, event):
+        """Handle mouse wheel for zooming"""
+        if event.delta > 0:
+            self.zoom_in()
+        else:
+            self.zoom_out()
     
     def on_canvas_click(self, event):
         """Handle canvas click events according to problem statement"""
@@ -326,6 +537,7 @@ class FleetManagementGUI:
         self.pan_start_y = None
     
     def spawn_robot(self, position: Tuple[float, float]):
+        """Spawn a new robot at the specified position"""
         new_robot = Robot(self.next_robot_id, position)
         self.robots[self.next_robot_id] = new_robot
         self.next_robot_id += 1
@@ -333,6 +545,7 @@ class FleetManagementGUI:
         self.draw_graph()
     
     def select_robot(self, robot_id: int):
+        """Select a robot by its ID"""
         self.selected_robot = robot_id
         log_system_event("Robot selected", f"ID: {robot_id}")
         self.update_robot_info()

@@ -27,12 +27,12 @@ class NavGraph:
             return vertices[index]
         return None
     
+
+    #So here i have used the A* algorithm to find the shortest path as it will be the optimal algorithm in this case
     def find_path(self, level_name: str, start_idx: int, end_idx: int) -> List[Tuple[float, float]]:
-        """Find path between two vertices using A* algorithm"""
         vertices = self.get_vertices(level_name)
         lanes = self.get_lanes(level_name)
         
-        # Build adjacency list
         graph = {i: [] for i in range(len(vertices))}
         for lane in lanes:
             a, b = lane[0], lane[1]
@@ -50,7 +50,6 @@ class NavGraph:
             _, current = heapq.heappop(open_set)
             
             if current == end_idx:
-                # Reconstruct path
                 path = []
                 while current in came_from:
                     path.append(current)
@@ -65,4 +64,4 @@ class NavGraph:
                     g_score[neighbor] = tentative_g_score
                     heapq.heappush(open_set, (tentative_g_score, neighbor))
         
-        return []  # No path found
+        return [] 

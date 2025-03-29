@@ -9,3 +9,178 @@
 2025-03-29 17:00:48,307 - INFO - System: Robot spawned. ID: 3 at (3.609031, -12.119056)
 2025-03-29 17:00:50,061 - INFO - Robot 1: Reached waypoint. 0/7
 2025-03-29 17:00:51,492 - INFO - Robot 1: Reached waypoint. 1/7
+2025-03-29 17:14:06,207 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_2.json
+2025-03-29 17:14:13,488 - INFO - Robot 1: Robot spawned. at position (6.8558435, -9.497056)
+2025-03-29 17:14:13,488 - INFO - System: Robot spawned. ID: 1 at (6.8558435, -9.497056)
+2025-03-29 17:14:15,986 - INFO - Robot 2: Robot spawned. at position (10.612308, -9.112872)
+2025-03-29 17:14:15,986 - INFO - System: Robot spawned. ID: 2 at (10.612308, -9.112872)
+2025-03-29 17:14:17,290 - INFO - Robot 3: Robot spawned. at position (12.234417, -11.432204)
+2025-03-29 17:14:17,291 - INFO - System: Robot spawned. ID: 3 at (12.234417, -11.432204)
+2025-03-29 17:14:20,184 - INFO - System: Robot selected. ID: 1
+2025-03-29 17:14:34,330 - INFO - Robot 1: Destination set. to (11.693713, -9.411682) via path [[7.4961495, -8.714459], [8.734076, -9.340537], [9.331695, -10.635379], [10.085833, -9.838552], [10.612308, -9.112872], [11.693713, -9.411682]]
+2025-03-29 17:14:35,543 - INFO - Robot 1: Reached waypoint. 0/6
+2025-03-29 17:14:37,224 - INFO - Robot 1: Reached waypoint. 1/6
+2025-03-29 17:14:38,955 - INFO - Robot 1: Reached waypoint. 2/6
+2025-03-29 17:14:40,282 - INFO - Robot 1: Reached waypoint. 3/6
+2025-03-29 17:14:41,362 - INFO - Robot 1: Reached waypoint. 4/6
+2025-03-29 17:14:42,730 - INFO - Robot 1: Reached waypoint. 5/6
+2025-03-29 17:14:42,794 - INFO - Robot 1: Reached destination. at [11.693713, -9.411682]
+2025-03-29 17:14:58,762 - INFO - System: Robot selected. ID: 1
+2025-03-29 17:15:02,348 - INFO - Robot 1: Destination set. to (6.8558435, -9.497056) via path [[10.612308, -9.112872], [10.085833, -9.838552], [9.331695, -10.635379], [8.734076, -9.340537], [7.4961495, -8.714459], [6.8558435, -9.497056]]
+2025-03-29 17:15:03,729 - INFO - Robot 1: Reached waypoint. 0/6
+2025-03-29 17:15:04,823 - INFO - Robot 1: Reached waypoint. 1/6
+2025-03-29 17:15:06,152 - INFO - Robot 1: Reached waypoint. 2/6
+2025-03-29 17:15:07,897 - INFO - Robot 1: Reached waypoint. 3/6
+2025-03-29 17:15:09,598 - INFO - Robot 1: Reached waypoint. 4/6
+2025-03-29 17:15:10,876 - INFO - Robot 1: Reached waypoint. 5/6
+2025-03-29 17:15:10,932 - INFO - Robot 1: Reached destination. at [6.8558435, -9.497056]
+2025-03-29 17:15:25,669 - INFO - System: Robot selected. ID: 1
+2025-03-29 17:15:27,144 - INFO - Robot 1: Destination set. to (10.085833, -9.838552) via path [[7.4961495, -8.714459], [8.734076, -9.340537], [9.331695, -10.635379], [10.085833, -9.838552]]
+2025-03-29 17:15:28,146 - INFO - System: Robot selected. ID: 2
+2025-03-29 17:15:28,374 - INFO - Robot 1: Reached waypoint. 0/4
+2025-03-29 17:15:29,214 - INFO - Robot 2: Destination set. to (8.406808, -11.218768) via path [[10.085833, -9.838552], [9.331695, -10.635379], [8.406808, -11.218768]]
+2025-03-29 17:15:30,021 - INFO - Robot 1: Reached waypoint. 1/4
+2025-03-29 17:15:30,259 - INFO - Robot 2: Reached waypoint. 0/3
+2025-03-29 17:15:31,611 - INFO - Robot 2: Reached waypoint. 1/3
+2025-03-29 17:15:31,791 - INFO - Robot 1: Reached waypoint. 2/4
+2025-03-29 17:15:32,952 - INFO - Robot 2: Reached waypoint. 2/3
+2025-03-29 17:15:33,016 - INFO - Robot 2: Reached destination. at [8.406808, -11.218768]
+2025-03-29 17:15:33,135 - INFO - Robot 1: Reached waypoint. 3/4
+2025-03-29 17:15:33,190 - INFO - Robot 1: Reached destination. at [10.085833, -9.838552]
+2025-03-29 19:56:59,951 - INFO - System: Robot selected. ID: 1
+2025-03-29 19:57:02,092 - INFO - Robot 1: Destination set. to (12.661289, -10.265424) via path [[10.612308, -9.112872], [11.693713, -9.411682], [12.661289, -10.265424]]
+2025-03-29 19:57:03,130 - INFO - Robot 1: Reached waypoint. 0/3
+2025-03-29 19:57:04,491 - INFO - Robot 1: Reached waypoint. 1/3
+2025-03-29 19:57:06,054 - INFO - Robot 1: Reached waypoint. 2/3
+2025-03-29 19:57:06,117 - INFO - Robot 1: Reached destination. at [12.661289, -10.265424]
+2025-03-29 19:57:12,029 - INFO - System: Robot selected. ID: 3
+2025-03-29 19:57:14,694 - INFO - Robot 3: Destination set. to (7.4961495, -8.714459) via path [[11.309529, -11.915991], [10.213894, -11.432204], [9.331695, -10.635379], [8.734076, -9.340537], [7.4961495, -8.714459]]
+2025-03-29 19:57:15,907 - INFO - Robot 3: Reached waypoint. 0/5
+2025-03-29 19:57:16,346 - INFO - System: Robot selected. ID: 1
+2025-03-29 19:57:17,333 - INFO - Robot 3: Reached waypoint. 1/5
+2025-03-29 19:57:17,906 - INFO - System: Robot selected. ID: 2
+2025-03-29 19:57:18,798 - INFO - Robot 3: Reached waypoint. 2/5
+2025-03-29 19:57:20,527 - INFO - Robot 3: Reached waypoint. 3/5
+2025-03-29 19:57:22,230 - INFO - Robot 3: Reached waypoint. 4/5
+2025-03-29 19:57:22,286 - INFO - Robot 3: Reached destination. at [7.4961495, -8.714459]
+2025-03-29 19:57:26,411 - INFO - System: Robot selected. ID: 3
+2025-03-29 19:57:28,388 - INFO - Robot 3: Destination set. to (10.213894, -11.432204) via path [[8.734076, -9.340537], [9.331695, -10.635379], [10.213894, -11.432204]]
+2025-03-29 19:57:29,356 - INFO - System: Robot selected. ID: 2
+2025-03-29 19:57:30,063 - INFO - Robot 3: Reached waypoint. 0/3
+2025-03-29 19:57:30,554 - INFO - Robot 2: Destination set. to (10.085833, -9.838552) via path [[9.331695, -10.635379], [10.085833, -9.838552]]
+2025-03-29 19:57:31,827 - INFO - Robot 3: Reached waypoint. 1/3
+2025-03-29 19:57:31,883 - INFO - Robot 2: Reached waypoint. 0/2
+2025-03-29 19:57:33,218 - INFO - Robot 2: Reached waypoint. 1/2
+2025-03-29 19:57:33,287 - INFO - Robot 2: Reached destination. at [10.085833, -9.838552]
+2025-03-29 19:57:33,287 - INFO - Robot 3: Reached waypoint. 2/3
+2025-03-29 19:57:33,345 - INFO - Robot 3: Reached destination. at [10.213894, -11.432204]
+2025-03-29 20:02:40,823 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_2.json
+2025-03-29 20:02:46,246 - INFO - Robot 1: Robot spawned. at position (10.612308, -9.112872)
+2025-03-29 20:02:46,246 - INFO - System: Robot spawned. ID: 1 at (10.612308, -9.112872)
+2025-03-29 20:02:50,990 - INFO - Robot 2: Robot spawned. at position (7.282715, -11.48912)
+2025-03-29 20:02:50,990 - INFO - System: Robot spawned. ID: 2 at (7.282715, -11.48912)
+2025-03-29 20:02:52,965 - INFO - System: Robot selected. ID: 1
+2025-03-29 20:02:54,632 - INFO - Robot 1: Destination set. to (11.309529, -11.915991) via path [[10.085833, -9.838552], [9.331695, -10.635379], [10.213894, -11.432204], [11.309529, -11.915991]]
+2025-03-29 20:02:55,666 - INFO - Robot 1: Reached waypoint. 0/4
+2025-03-29 20:02:57,004 - INFO - Robot 1: Reached waypoint. 1/4
+2025-03-29 20:02:58,471 - INFO - Robot 1: Reached waypoint. 2/4
+2025-03-29 20:02:59,917 - INFO - Robot 1: Reached waypoint. 3/4
+2025-03-29 20:02:59,979 - INFO - Robot 1: Reached destination. at [11.309529, -11.915991]
+2025-03-29 20:03:03,849 - INFO - System: Robot selected. ID: 1
+2025-03-29 20:03:05,299 - INFO - Robot 1: Destination set. to (7.4961495, -8.714459) via path [[10.213894, -11.432204], [9.331695, -10.635379], [8.734076, -9.340537], [7.4961495, -8.714459]]
+2025-03-29 20:03:06,736 - INFO - Robot 1: Reached waypoint. 0/4
+2025-03-29 20:03:07,441 - INFO - Robot 3: Robot spawned. at position (8.406808, -11.218768)
+2025-03-29 20:03:07,441 - INFO - System: Robot spawned. ID: 3 at (8.406808, -11.218768)
+2025-03-29 20:03:08,185 - INFO - Robot 1: Reached waypoint. 1/4
+2025-03-29 20:03:08,933 - INFO - System: Robot selected. ID: 3
+2025-03-29 20:03:09,946 - INFO - Robot 1: Reached waypoint. 2/4
+2025-03-29 20:03:10,702 - INFO - Robot 3: Destination set. to (10.612308, -9.112872) via path [[9.331695, -10.635379], [10.085833, -9.838552], [10.612308, -9.112872]]
+2025-03-29 20:03:11,650 - INFO - Robot 1: Reached waypoint. 3/4
+2025-03-29 20:03:11,712 - INFO - Robot 1: Reached destination. at [7.4961495, -8.714459]
+2025-03-29 20:03:12,018 - INFO - Robot 3: Reached waypoint. 0/3
+2025-03-29 20:03:13,362 - INFO - Robot 3: Reached waypoint. 1/3
+2025-03-29 20:03:14,457 - INFO - Robot 3: Reached waypoint. 2/3
+2025-03-29 20:03:14,519 - INFO - Robot 3: Reached destination. at [10.612308, -9.112872]
+2025-03-29 20:27:28,694 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_3.json
+2025-03-29 20:27:33,988 - INFO - Robot 1: Robot spawned. at position (12.272814, -9.345879)
+2025-03-29 20:27:33,988 - INFO - System: Robot spawned. ID: 1 at (12.272814, -9.345879)
+2025-03-29 20:27:36,376 - INFO - Robot 2: Robot spawned. at position (5.325046, -11.613553)
+2025-03-29 20:27:36,376 - INFO - System: Robot spawned. ID: 2 at (5.325046, -11.613553)
+2025-03-29 20:27:37,988 - INFO - System: Robot selected. ID: 1
+2025-03-29 20:27:39,519 - INFO - Robot 1: Destination set. to (9.763898, -13.720399) via path [[12.176317, -13.623901], [9.763898, -13.720399]]
+2025-03-29 20:27:44,647 - INFO - Robot 1: Reached waypoint. 0/2
+2025-03-29 20:27:47,627 - INFO - Robot 1: Reached waypoint. 1/2
+2025-03-29 20:27:47,688 - INFO - Robot 1: Reached destination. at [9.763898, -13.720399]
+2025-03-29 21:32:54,858 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_1.json
+2025-03-29 21:33:06,903 - INFO - Robot 1: Robot spawned. at position (3.6105862, -1.9856441)
+2025-03-29 21:33:06,903 - INFO - System: Robot spawned. ID: 1 at (3.6105862, -1.9856441)
+2025-03-29 21:33:08,778 - INFO - Robot 2: Robot spawned. at position (9.965073, -9.163389)
+2025-03-29 21:33:08,778 - INFO - System: Robot spawned. ID: 2 at (9.965073, -9.163389)
+2025-03-29 21:33:10,476 - INFO - System: Robot selected. ID: 1
+2025-03-29 21:33:14,530 - INFO - Robot 1: Destination set. to (9.962933, -5.3731146) via path [[4.510532, -1.1932992], [6.738686, -1.1838837], [8.978668, -1.2015088], [9.946822, -2.0208943], [9.962933, -5.3731146]]
+2025-03-29 21:33:15,973 - INFO - Robot 1: Reached waypoint. 0/5
+2025-03-29 21:33:18,723 - INFO - Robot 1: Reached waypoint. 1/5
+2025-03-29 21:33:21,451 - INFO - Robot 1: Reached waypoint. 2/5
+2025-03-29 21:33:23,034 - INFO - Robot 1: Reached waypoint. 3/5
+2025-03-29 21:33:27,267 - INFO - Robot 1: Reached waypoint. 4/5
+2025-03-29 21:33:27,328 - INFO - Robot 1: Reached destination. at [9.962933, -5.3731146]
+2025-03-29 21:37:24,683 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_1.json
+2025-03-29 21:37:47,589 - INFO - Robot 1: Robot spawned. at position (3.5691242, -5.4117103)
+2025-03-29 21:37:47,589 - INFO - System: Robot spawned. ID: 1 at (3.5691242, -5.4117103)
+2025-03-29 21:37:49,413 - INFO - Robot 2: Robot spawned. at position (9.965073, -9.163389)
+2025-03-29 21:37:49,413 - INFO - System: Robot spawned. ID: 2 at (9.965073, -9.163389)
+2025-03-29 21:37:52,016 - INFO - System: Robot selected. ID: 1
+2025-03-29 21:37:53,365 - INFO - Robot 1: Destination set. to (9.962933, -5.3731146) via path [[3.6105862, -1.9856441], [4.510532, -1.1932992], [6.738686, -1.1838837], [8.978668, -1.2015088], [9.946822, -2.0208943], [9.962933, -5.3731146]]
+2025-03-29 21:37:57,632 - INFO - Robot 1: Reached waypoint. 0/6
+2025-03-29 21:37:59,090 - INFO - Robot 1: Reached waypoint. 1/6
+2025-03-29 21:38:01,834 - INFO - Robot 1: Reached waypoint. 2/6
+2025-03-29 21:38:04,594 - INFO - Robot 1: Reached waypoint. 3/6
+2025-03-29 21:38:06,163 - INFO - Robot 1: Reached waypoint. 4/6
+2025-03-29 21:38:07,777 - INFO - System: Robot selected. ID: 2
+2025-03-29 21:38:09,130 - INFO - Robot 2: Destination set. to (3.6105862, -1.9856441) via path [[9.962933, -5.3731146], [9.946822, -2.0208943], [8.978668, -1.2015088], [6.738686, -1.1838837], [4.510532, -1.1932992], [3.6105862, -1.9856441]]
+2025-03-29 21:38:10,216 - INFO - Robot 1: Reached waypoint. 5/6
+2025-03-29 21:38:10,277 - INFO - Robot 1: Reached destination. at [9.962933, -5.3731146]
+2025-03-29 21:38:13,758 - INFO - Robot 2: Reached waypoint. 0/6
+2025-03-29 21:38:17,986 - INFO - Robot 2: Reached waypoint. 1/6
+2025-03-29 21:38:19,583 - INFO - Robot 2: Reached waypoint. 2/6
+2025-03-29 21:38:22,346 - INFO - Robot 2: Reached waypoint. 3/6
+2025-03-29 21:38:25,102 - INFO - Robot 2: Reached waypoint. 4/6
+2025-03-29 21:38:26,574 - INFO - Robot 2: Reached waypoint. 5/6
+2025-03-29 21:38:26,636 - INFO - Robot 2: Reached destination. at [3.6105862, -1.9856441]
+2025-03-29 21:41:20,869 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_2.json
+2025-03-29 21:41:46,046 - INFO - Robot 1: Robot spawned. at position (10.612308, -9.112872)
+2025-03-29 21:41:46,046 - INFO - System: Robot spawned. ID: 1 at (10.612308, -9.112872)
+2025-03-29 21:41:52,665 - INFO - Robot 2: Robot spawned. at position (11.309529, -11.915991)
+2025-03-29 21:41:52,665 - INFO - System: Robot spawned. ID: 2 at (11.309529, -11.915991)
+2025-03-29 21:41:54,221 - INFO - System: Robot selected. ID: 1
+2025-03-29 21:41:55,356 - INFO - Robot 1: Destination set. to (12.661289, -10.265424) via path [[11.693713, -9.411682], [12.661289, -10.265424]]
+2025-03-29 21:41:56,712 - INFO - Robot 1: Reached waypoint. 0/2
+2025-03-29 21:41:58,289 - INFO - Robot 1: Reached waypoint. 1/2
+2025-03-29 21:41:58,350 - INFO - Robot 1: Reached destination. at [12.661289, -10.265424]
+2025-03-29 21:42:04,184 - INFO - Robot 3: Robot spawned. at position (7.4961495, -8.714459)
+2025-03-29 21:42:04,184 - INFO - System: Robot spawned. ID: 3 at (7.4961495, -8.714459)
+2025-03-29 21:42:07,561 - INFO - System: Robot selected. ID: 3
+2025-03-29 21:42:09,794 - INFO - Robot 3: Destination set. to (12.234417, -11.432204) via path [[8.734076, -9.340537], [9.331695, -10.635379], [10.213894, -11.432204], [11.309529, -11.915991], [12.234417, -11.432204]]
+2025-03-29 21:42:11,478 - INFO - Robot 3: Reached waypoint. 0/5
+2025-03-29 21:42:13,259 - INFO - Robot 3: Reached waypoint. 1/5
+2025-03-29 21:42:14,714 - INFO - Robot 3: Reached waypoint. 2/5
+2025-03-29 21:42:16,181 - INFO - Robot 3: Reached waypoint. 3/5
+2025-03-29 21:42:17,464 - INFO - Robot 3: Reached waypoint. 4/5
+2025-03-29 21:42:17,525 - INFO - Robot 3: Reached destination. at [12.234417, -11.432204]
+2025-03-29 21:42:59,386 - INFO - System: Robot selected. ID: 1
+2025-03-29 21:43:01,350 - INFO - Robot 1: Destination set. to (6.8558435, -9.497056) via path [[11.693713, -9.411682], [10.612308, -9.112872], [10.085833, -9.838552], [9.331695, -10.635379], [8.734076, -9.340537], [7.4961495, -8.714459], [6.8558435, -9.497056]]
+2025-03-29 21:43:02,914 - INFO - Robot 1: Reached waypoint. 0/7
+2025-03-29 21:43:04,324 - INFO - Robot 1: Reached waypoint. 1/7
+2025-03-29 21:43:05,420 - INFO - Robot 1: Reached waypoint. 2/7
+2025-03-29 21:43:06,709 - INFO - Robot 1: Reached waypoint. 3/7
+2025-03-29 21:43:08,394 - INFO - Robot 1: Reached waypoint. 4/7
+2025-03-29 21:43:10,099 - INFO - Robot 1: Reached waypoint. 5/7
+2025-03-29 21:43:11,348 - INFO - Robot 1: Reached waypoint. 6/7
+2025-03-29 21:43:11,409 - INFO - Robot 1: Reached destination. at [6.8558435, -9.497056]
+2025-03-29 21:43:13,351 - INFO - System: Robot selected. ID: 1
+2025-03-29 21:43:14,460 - INFO - Robot 1: Destination set. to (8.406808, -11.218768) via path [[6.7989273, -10.734982], [7.282715, -11.48912], [8.406808, -11.218768]]
+2025-03-29 21:43:15,928 - INFO - Robot 1: Reached waypoint. 0/3
+2025-03-29 21:43:17,020 - INFO - Robot 1: Reached waypoint. 1/3
+2025-03-29 21:43:18,487 - INFO - Robot 1: Reached waypoint. 2/3
+2025-03-29 21:43:18,548 - INFO - Robot 1: Reached destination. at [8.406808, -11.218768]
+2025-03-29 21:49:45,722 - INFO - System: System initialized. Loading graph from C:/COLLEGE/Placements/summa/GoatPSGHackathon_22PC16/fleet_management_system/data/nav_graph_1.json
