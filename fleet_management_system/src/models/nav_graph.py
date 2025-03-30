@@ -39,7 +39,6 @@ class NavGraph:
             graph[a].append(b)
             graph[b].append(a)
         
-        # A* algorithm
         open_set = []
         heapq.heappush(open_set, (0, start_idx))
         came_from = {}
@@ -55,9 +54,8 @@ class NavGraph:
                     path_indices.append(current)
                     current = came_from[current]
                 path_indices.reverse()
-                path_indices.append(end_idx)  # Ensure destination is included
-                
-                # Convert indices to coordinates
+                path_indices.append(end_idx)  
+
                 path_coords = []
                 for idx in path_indices:
                     if 0 <= idx < len(vertices):
@@ -72,4 +70,4 @@ class NavGraph:
                     g_score[neighbor] = tentative_g_score
                     heapq.heappush(open_set, (tentative_g_score, neighbor))
         
-        return [], []  # Return empty lists if no path found
+        return [], [] 

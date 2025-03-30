@@ -3,8 +3,8 @@ from src.utils.logger import log_system_event
 
 class TrafficManager:
     def __init__(self):
-        self.reserved_lanes: Dict[Tuple[int, int], int] = {}  # (start_idx, end_idx): robot_id
-        self.waiting_robots: Dict[int, Tuple[int, int]] = {}  # robot_id: (start_idx, end_idx)
+        self.reserved_lanes: Dict[Tuple[int, int], int] = {}
+        self.waiting_robots: Dict[int, Tuple[int, int]] = {}  
         log_system_event("TrafficManager initialized", "Ready to manage lane traffic")
 
     def request_lane(self, robot_id: int, lane: Tuple[int, int]) -> bool:
@@ -12,13 +12,9 @@ class TrafficManager:
         Request to reserve a lane for a robot.
         Returns True if granted, False if blocked.
         """
-        # Check if lane is already reserved by another robot
         for reserved_lane, reserved_robot in self.reserved_lanes.items():
-            # Check for direct collision (same lane in same direction)
             if reserved_lane == lane and reserved_robot != robot_id:
                 return False
-            
-            # Check for head-on collision (same lane in opposite direction)
             if reserved_lane == (lane[1], lane[0]) and reserved_robot != robot_id:
                 return False
 
@@ -34,7 +30,6 @@ class TrafficManager:
         if lane in self.reserved_lanes:
             released_robot = self.reserved_lanes[lane]
             del self.reserved_lanes[lane]
-            
             # Check if any robots are waiting for this lane
             waiting_robots = self.get_waiting_robots(lane)
             for robot_id in waiting_robots:
