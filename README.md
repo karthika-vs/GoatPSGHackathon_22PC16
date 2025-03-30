@@ -8,13 +8,28 @@ A Python-based Fleet Management System designed for managing multiple robots nav
 
 -  **Interactive GUI** with zoom/pan capabilities
 -  **Robot Management**:
-        Spawn robots by clicking vertices
-        Assign destinations visually
+        Spawn robots by clicking vertices,
+        Assign destinations visually,
         Unique robot colors/IDs
 -  **Traffic Negotiation**:
-        Real-time collision avoidance
-        Lane reservation system
+        Real-time collision avoidance,
+        Lane reservation system,
         Visual waiting indicators
 -  **Pathfinding** with A* algorithm
 -  **Status Monitoring** panel
 -  **Multi-level Support** for buildings
+
+## Installation and Setup
+
+1. Clone the repository:
+    ```bash
+    git clone [repository-url]
+    cd fleet_management_system
+
+2. Install Dependencies
+    ```bash
+    pip install -r requirements.txt
+
+3. Run the application:
+    ```bash
+    python -m src.main
