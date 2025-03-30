@@ -29,7 +29,7 @@ class NavGraph:
     
 
     #So here i have used the A* algorithm to find the shortest path as it will be the optimal algorithm in this case
-    def find_path(self, level_name: str, start_idx: int, end_idx: int) -> List[Tuple[float, float]]:
+    def find_path(self, level_name: str, start_idx: int, end_idx: int) -> Tuple[List[Tuple[float, float]], List[int]]:
         vertices = self.get_vertices(level_name)
         lanes = self.get_lanes(level_name)
         
@@ -50,12 +50,20 @@ class NavGraph:
             _, current = heapq.heappop(open_set)
             
             if current == end_idx:
-                path = []
+                path_indices = []
                 while current in came_from:
-                    path.append(current)
+                    path_indices.append(current)
                     current = came_from[current]
-                path.reverse()
-                return [vertices[idx][:2] for idx in path]
+                path_indices.reverse()
+                path_indices.append(end_idx)  # Ensure destination is included
+                
+                # Convert indices to coordinates
+                path_coords = []
+                for idx in path_indices:
+                    if 0 <= idx < len(vertices):
+                        path_coords.append(vertices[idx][:2])
+                
+                return path_coords, path_indices
             
             for neighbor in graph[current]:
                 tentative_g_score = g_score[current] + 1
@@ -64,4 +72,4 @@ class NavGraph:
                     g_score[neighbor] = tentative_g_score
                     heapq.heappush(open_set, (tentative_g_score, neighbor))
         
-        return [] 
+        return [], []  # Return empty lists if no path found

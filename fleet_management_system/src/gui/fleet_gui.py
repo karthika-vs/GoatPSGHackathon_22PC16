@@ -1,9 +1,13 @@
+import math
+import time
 import tkinter as tk
 from tkinter import ttk, messagebox
 from typing import Dict, List, Tuple, Any
 from math import sqrt
 from ..models.nav_graph import NavGraph
 from ..models.robot import Robot
+from src.controllers.traffic_manager import TrafficManager
+from src.controllers.fleet_manager import FleetManager
 from src.utils.logger import log_robot_action, log_system_event
 
 class FleetManagementGUI:
@@ -15,11 +19,13 @@ class FleetManagementGUI:
         self.root.geometry("1200x800")
         self.root.minsize(1000, 700)
         
-        # Custom styling
+        # Custom stylin
         self.setup_styles()
         
         # Load navigation graph
         self.nav_graph = NavGraph(nav_graph_file)
+        self.traffic_manager = TrafficManager()
+        self.fleet_manager = FleetManager()
         
         # Set current level
         self.current_level = self.nav_graph.get_level_names()[0]
@@ -209,11 +215,17 @@ class FleetManagementGUI:
             y1 = -start[1] * self.scale + self.center_y
             x2 = end[0] * self.scale + self.center_x
             y2 = -end[1] * self.scale + self.center_y
+
+            lane_key = (start_idx, end_idx)
+            is_reserved = lane_key in self.traffic_manager.reserved_lanes
+        
+        # Draw lane with different color if reserved
+            lane_color = "#ff0000" if is_reserved else "#a0a0a0"
             
             # Draw lane with gradient effect
             self.canvas.create_line(
                 x1, y1, x2, y2, 
-                fill="#a0a0a0", 
+                fill=lane_color, 
                 width=3, 
                 arrow=tk.LAST, 
                 arrowshape=(8, 10, 5),
@@ -361,37 +373,68 @@ class FleetManagementGUI:
             # Draw path to destination if selected
             if robot.path:
                 self.draw_robot_path(robot)
+
+        if robot.status == "waiting":
+            # Add pulsating effect for waiting robots
+            pulse_phase = (time.time() % 1.0) * 2 * math.pi
+            pulse_alpha = 0.5 + 0.3 * math.sin(pulse_phase)
+            pulse_color = self.canvas.create_oval(
+                cx-radius-2, cy-radius-2,
+                cx+radius+2, cy+radius+2,
+                outline="#f1c40f", width=2,
+                tags=f"robot_pulse_{robot.id}"
+            )
+            self.canvas.itemconfig(pulse_color, stipple="gray50")
     
     def draw_robot_path(self, robot: Robot):
-        """Draw the path for a selected robot"""
+        """Draw the path for a selected robot with segment highlighting"""
         vertices = self.nav_graph.get_vertices(self.current_level)
         path_points = []
         
-        for vertex_idx in robot.path:
-            vertex = vertices[vertex_idx]
-            x = vertex[0] * self.scale + self.center_x
-            y = -vertex[1] * self.scale + self.center_y
-            path_points.extend([x, y])
-        
-        if len(path_points) >= 4:
-            # Draw path line
-            self.canvas.create_line(
-                *path_points,
-                fill="#f1c40f",
-                width=2,
-                dash=(5, 3),
-                tags=f"robot_path_{robot.id}"
-            )
+        if not hasattr(robot, 'path_indices') or not robot.path_indices:
+            return
             
-            # Draw path markers
-            for i in range(0, len(path_points), 2):
-                x, y = path_points[i], path_points[i+1]
+        # Draw all segments in the path
+        for i in range(len(robot.path_indices) - 1):
+            start_idx = robot.path_indices[i]
+            end_idx = robot.path_indices[i + 1]
+            
+            if 0 <= start_idx < len(vertices) and 0 <= end_idx < len(vertices):
+                start = vertices[start_idx]
+                end = vertices[end_idx]
+                
+                x1 = start[0] * self.scale + self.center_x
+                y1 = -start[1] * self.scale + self.center_y
+                x2 = end[0] * self.scale + self.center_x
+                y2 = -end[1] * self.scale + self.center_y
+                
+                # Highlight the current segment
+                if i == robot.current_path_index:
+                    self.canvas.create_line(
+                        x1, y1, x2, y2,
+                        fill="#f1c40f",
+                        width=4,
+                        arrow=tk.LAST,
+                        arrowshape=(8, 10, 5),
+                        tags=f"robot_path_segment_{robot.id}"
+                    )
+                
+                path_points.extend([x1, y1, x2, y2])
+        
+        # Draw path markers at vertices
+        for i, vertex_idx in enumerate(robot.path_indices):
+            if 0 <= vertex_idx < len(vertices):
+                vertex = vertices[vertex_idx]
+                x = vertex[0] * self.scale + self.center_x
+                y = -vertex[1] * self.scale + self.center_y
+                
                 self.canvas.create_oval(
                     x-3, y-3, x+3, y+3,
-                    fill="#f1c40f", outline="#d35400",
-                    tags=f"path_marker_{robot.id}_{i//2}"
+                    fill="#f1c40f" if i > robot.current_path_index else "#27ae60",
+                    outline="#d35400",
+                    tags=f"path_marker_{robot.id}_{i}"
                 )
-    
+                    
     def draw_legend(self):
         """Draw a perfectly aligned legend with consistent spacing"""
         legend_x = 20
@@ -543,45 +586,22 @@ class FleetManagementGUI:
     
     def spawn_robot(self, position: Tuple[float, float]):
         """Spawn a new robot at the specified position"""
-        new_robot = Robot(self.next_robot_id, position)
-        self.robots[self.next_robot_id] = new_robot
-        self.next_robot_id += 1
+        new_robot = self.fleet_manager.spawn_robot(position)
+        self.robots[new_robot.id] = new_robot  # Keep local reference
         log_system_event("Robot spawned", f"ID: {new_robot.id} at {position}")
         self.draw_graph()
     
     def select_robot(self, robot_id: int):
         """Select a robot by its ID"""
-        self.selected_robot = robot_id
-        log_system_event("Robot selected", f"ID: {robot_id}")
-        self.update_robot_info()
-        self.draw_graph()
+        if robot_id in self.robots:
+            self.selected_robot = robot_id
+            log_system_event("Robot selected", f"ID: {robot_id}")
+            self.update_robot_info()
+            self.draw_graph()
     
     def clear_selection(self):
         """Clear the current robot selection"""
         self.selected_robot = None
-        self.update_robot_info()
-        self.draw_graph()
-    
-    def assign_destination(self, robot_id: int, destination: Tuple[float, float]):
-        if robot_id not in self.robots:
-            log_system_event("Warning", f"Invalid robot ID: {robot_id}")
-            return
-            
-        robot = self.robots[robot_id]
-        start_idx = self.find_closest_vertex(robot.position)
-        end_idx = self.find_closest_vertex(destination)
-        
-        if start_idx == end_idx:
-            log_system_event("Warning", "Robot already at destination")
-            return
-        
-        path = self.nav_graph.find_path(self.current_level, start_idx, end_idx)
-        
-        if not path:
-            log_system_event("Warning", "No valid path found")
-            return
-        
-        robot.set_destination(destination, path)
         self.update_robot_info()
         self.draw_graph()
     
@@ -594,7 +614,7 @@ class FleetManagementGUI:
         """Update the robot information display"""
         if self.selected_robot is None:
             self.robot_info_label.config(text="No robot selected")
-        else:
+        elif self.selected_robot in self.robots:
             robot = self.robots[self.selected_robot]
             info = (
                 f"Robot ID: {robot.id}\n"
@@ -656,42 +676,51 @@ class FleetManagementGUI:
         if not self.animation_running:
             return
             
-        any_robot_moved = False
+        # Update all robots through fleet manager (which handles traffic)
+        self.fleet_manager.update_robots()
         
-        # Update all robot positions
-        for robot in self.robots.values():
-            if robot.status == "moving":
-                robot.update_position()
-                any_robot_moved = True
+        # Update our local robots' positions from the fleet manager
+        for robot_id, robot in self.fleet_manager.robots.items():
+            if robot_id in self.robots:
+                self.robots[robot_id].position = robot.position
+                self.robots[robot_id].status = robot.status
         
-        # Redraw if any robot moved
-        if any_robot_moved:
-            self.draw_graph()
+        # Redraw the graph
+        self.draw_graph()
         
         # Schedule next animation frame
         self.after_id = self.root.after(50, self.animate_robots)
     
     def assign_destination(self, robot_id: int, destination: Tuple[float, float]):
-        """Assign a destination to a robot with pathfinding"""
         if robot_id not in self.robots:
+            log_system_event("Warning", f"Invalid robot ID: {robot_id}")
             return
             
         robot = self.robots[robot_id]
-        
-        # Find closest vertex to robot's current position
         start_idx = self.find_closest_vertex(robot.position)
         end_idx = self.find_closest_vertex(destination)
         
         if start_idx == end_idx:
-            return  # Already at destination
+            log_system_event("Warning", "Robot already at destination")
+            return
         
-        # Find path
-        path = self.nav_graph.find_path(self.current_level, start_idx, end_idx)
+        path_coords, path_indices = self.nav_graph.find_path(self.current_level, start_idx, end_idx)
         
-        if path:
-            robot.set_destination(destination, path)
-            self.update_robot_info()
-    
+        if not path_coords:
+            log_system_event("Warning", "No valid path found")
+            return
+        
+        # Snap robot to the starting vertex if it's not exactly on it
+        if len(path_coords) > 0:
+            robot.position = path_coords[0]
+        
+        robot.path = path_coords
+        robot.path_indices = path_indices
+        robot.current_path_index = 0
+        robot.status = "moving"
+        self.update_robot_info()
+        self.draw_graph()
+        
     def find_closest_vertex(self, position: Tuple[float, float]) -> int:
         """Find the index of the vertex closest to given position"""
         vertices = self.nav_graph.get_vertices(self.current_level)
