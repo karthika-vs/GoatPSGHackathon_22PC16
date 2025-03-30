@@ -47,3 +47,38 @@ A Python-based Fleet Management System designed for managing multiple robots nav
 3. Run the application:
     ```bash
     python -m src.main
+
+## Usage Guide
+
+### Basic Controls
+- **Spawn Robot**: Click on any vertex (circle)
+- **Assign Destination**:
+  1. Click on a robot to select it
+  2. Click on destination vertex
+- **View Controls**:
+  - Mouse wheel: Zoom in/out
+  - Right-click + drag: Pan view
+  - "Reset View" button: Reset zoom/pan
+
+### Interface Elements
+**Left Panel**:
+- Interactive map with:
+  - Robots (colored circles with IDs)
+  - Paths (colored lines)
+  - Vertices (location markers)
+
+**Right Panel**:
+- Robot information (selected robot):
+  - ID
+  - Status
+  - Position
+  - Destination
+- System status display
+- Level selection dropdown
+- Control buttons:
+  - Zoom in/out
+  - Reset view
+  - Clear selection
+
+## Output video link
+https://drive.google.com/drive/folders/1wbLfgHOd1R6qKz3FQMwufsTuXcoPjQFi
