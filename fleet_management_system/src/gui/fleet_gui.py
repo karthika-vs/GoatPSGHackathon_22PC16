@@ -61,13 +61,14 @@ class FleetManagementGUI:
         self.canvas.bind("<ButtonPress-1>", self.on_canvas_click)
         self.canvas.bind("<B1-Motion>", self.pan)
         self.canvas.bind("<ButtonRelease-1>", self.on_canvas_release)
-        self.canvas.bind("<MouseWheel>", self.on_mousewheel)  # For zoom with mouse wheel
+        self.canvas.bind("<MouseWheel>", self.on_mousewheel)
         
         # Animation control
         self.animation_running = False
         self.after_id = None
         
-        # Draw the initial graph
+        # Ensure canvas is ready before first draw
+        self.root.update_idletasks()
         self.draw_graph()
         
         # Start animation loop
@@ -165,8 +166,12 @@ class FleetManagementGUI:
         """Draw the navigation graph with robots using improved visuals"""
         self.canvas.delete("all")
         
-        # Draw a subtle grid background
         self.draw_grid()
+        # Draw a subtle grid background
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
+        if canvas_width <= 1 or canvas_height <= 1:  # Canvas not ready
+            return
         
         vertices = self.nav_graph.get_vertices(self.current_level)
         lanes = self.nav_graph.get_lanes(self.current_level)
@@ -184,12 +189,12 @@ class FleetManagementGUI:
         graph_height = max(1, max_y - min_y)
         
         self.scale = min(
-            (self.canvas.winfo_width() * 0.8) / graph_width,
-            (self.canvas.winfo_height() * 0.8) / graph_height
-        ) * self.zoom_level
+        (canvas_width * 0.9) / graph_width,
+        (canvas_height * 0.9) / graph_height
+         )
         
-        self.center_x = (self.canvas.winfo_width() / 2) - ((min_x + max_x) / 2) * self.scale + self.offset_x
-        self.center_y = (self.canvas.winfo_height() / 2) - ((min_y + max_y) / 2) * self.scale + self.offset_y
+        self.center_x = (canvas_width / 2) - ((min_x + max_x) / 2) * self.scale
+        self.center_y = (canvas_height / 2) - ((min_y + max_y) / 2) * self.scale
         
         # Store vertex positions for click detection
         self.vertex_positions = []
@@ -615,6 +620,7 @@ class FleetManagementGUI:
         self.zoom_level = 1.0
         self.offset_x = 0
         self.offset_y = 0
+        self.root.update_idletasks()
         self.draw_graph()
     
     def pan(self, event):
