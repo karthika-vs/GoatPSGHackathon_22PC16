@@ -6,18 +6,32 @@ A Python-based Fleet Management System designed for managing multiple robots nav
 
 ## Features
 
--  **Interactive GUI** with zoom/pan capabilities
--  **Robot Management**:
-        Spawn robots by clicking vertices,
-        Assign destinations visually,
-        Unique robot colors/IDs
--  **Traffic Negotiation**:
-        Real-time collision avoidance,
-        Lane reservation system,
-        Visual waiting indicators
--  **Pathfinding** with A* algorithm
--  **Status Monitoring** panel
--  **Multi-level Support** for buildings
+### Core Functionality
+- **Interactive Map**: Click vertices to spawn robots and assign destinations
+- **Robot Management**: 
+  - Unique colored robots with IDs
+  - Visual path highlighting
+  - Status indicators (moving/waiting/idle)
+  
+### Traffic Control
+- **Smart Navigation**: A* pathfinding algorithm
+- **Collision Avoidance**: 
+  - Lane reservation system
+  - Automatic waiting at busy lanes
+  - Visual queue indicators
+
+### System Features
+- **Multi-level Support**: Switch between building floors
+- **View Controls**: Zoom, pan and reset view
+- **Real-time Monitoring**: 
+  - Selected robot info panel
+  - System status display
+- **Comprehensive Logging**: All actions logged with timestamps
+
+### Technical Highlights
+- Smooth 50ms animation updates
+- Bi-directional lane collision detection
+- Automatic path recalculation
 
 ## Installation and Setup
 
